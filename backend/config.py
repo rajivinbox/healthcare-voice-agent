@@ -9,7 +9,7 @@ class Settings(BaseSettings):
     anthropic_api_key: str = ""
 
     # Voice
-    openai_api_key: str = ""
+    elevenlabs_api_key: str = ""
 
     # Google Calendar
     google_service_account_file: str = ""

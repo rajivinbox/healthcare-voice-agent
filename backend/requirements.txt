@@ -12,8 +12,8 @@ langchain==0.3.14
 langchain-anthropic==0.3.3
 langgraph==0.2.62
 
-# Voice - STT / TTS
-openai==1.59.9
+# Voice - STT / TTS (ElevenLabs)
+elevenlabs==2.36.1
 
 # Data - Excel
 openpyxl==3.1.5

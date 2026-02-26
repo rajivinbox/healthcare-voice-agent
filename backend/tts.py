@@ -1,49 +1,53 @@
-"""Text-to-Speech using OpenAI TTS API."""
+"""Text-to-Speech using ElevenLabs API."""
 import logging
-from openai import AsyncOpenAI
+from elevenlabs import AsyncElevenLabs
 from config import settings
 
 logger = logging.getLogger(__name__)
-_client: AsyncOpenAI | None = None
+_client: AsyncElevenLabs | None = None
+
+# Default voice — "Rachel" is a clear, professional female voice
+# Browse voices at: elevenlabs.io/voice-library
+DEFAULT_VOICE_ID = "21m00Tcm4TlvDq8ikWAM"   # Rachel
 
 
-def _get_client() -> AsyncOpenAI:
+def _get_client() -> AsyncElevenLabs:
     global _client
     if _client is None:
-        _client = AsyncOpenAI(api_key=settings.openai_api_key)
+        _client = AsyncElevenLabs(api_key=settings.elevenlabs_api_key)
     return _client
 
 
 async def synthesize_speech(
     text: str,
-    voice: str = "nova",
-    speed: float = 1.0,
+    voice_id: str = DEFAULT_VOICE_ID,
+    model_id: str = "eleven_turbo_v2_5",
 ) -> bytes:
     """
-    Convert text to speech audio bytes using OpenAI TTS.
+    Convert text to speech audio bytes using ElevenLabs.
 
     Args:
         text: Text to synthesize
-        voice: OpenAI voice ID — alloy | echo | fable | onyx | nova | shimmer
-        speed: Speech speed multiplier (0.25–4.0)
+        voice_id: ElevenLabs voice ID (default: Rachel)
+        model_id: Model to use — eleven_turbo_v2_5 (fast) or eleven_multilingual_v2 (quality)
 
     Returns:
         MP3 audio bytes
     """
-    if not settings.openai_api_key:
-        raise ValueError("OPENAI_API_KEY is not configured")
+    if not settings.elevenlabs_api_key:
+        raise ValueError("ELEVENLABS_API_KEY is not configured")
 
     logger.info("Synthesizing speech for text (%d chars)", len(text))
 
     client = _get_client()
-    response = await client.audio.speech.create(
-        model="tts-1",
-        voice=voice,
-        input=text,
-        speed=speed,
-        response_format="mp3",
+    audio_generator = await client.text_to_speech.convert(
+        voice_id=voice_id,
+        text=text,
+        model_id=model_id,
+        output_format="mp3_44100_128",
     )
 
-    audio_bytes = response.content
+    # Collect streamed chunks into a single bytes object
+    audio_bytes = b"".join([chunk async for chunk in audio_generator])
     logger.info("TTS produced %d bytes of audio", len(audio_bytes))
     return audio_bytes
