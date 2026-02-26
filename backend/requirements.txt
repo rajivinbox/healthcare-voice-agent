@@ -1,0 +1,30 @@
+# Core
+fastapi==0.115.6
+uvicorn[standard]==0.34.0
+python-multipart==0.0.20
+pydantic==2.10.4
+pydantic-settings==2.7.0
+python-dotenv==1.0.1
+
+# LLM & Agent
+anthropic==0.43.0
+langchain==0.3.14
+langchain-anthropic==0.3.3
+langgraph==0.2.62
+
+# Voice - STT / TTS
+openai==1.59.9
+
+# Data - Excel
+openpyxl==3.1.5
+pandas==2.2.3
+
+# Google Calendar
+google-api-python-client==2.155.0
+google-auth-httplib2==0.2.0
+google-auth-oauthlib==1.2.1
+
+# Utilities
+httpx==0.28.1
+aiofiles==24.1.0
+python-dateutil==2.9.0
