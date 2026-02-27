@@ -39,13 +39,16 @@ cd backend
 cp .env.example .env
 
 # Install dependencies (Python 3.11+)
-pip install -r requirements.txt
+pip install -r requirements.txt        # Linux/Mac
+py -3 -m pip install -r requirements.txt  # Windows
 
 # Create sample patient Excel data
-python data/create_sample_data.py
+python data/create_sample_data.py      # Linux/Mac
+py -3 data/create_sample_data.py       # Windows
 
 # Start the API server
-uvicorn main:app --reload --port 8000
+uvicorn main:app --reload --port 8000          # Linux/Mac
+py -3 -m uvicorn main:app --reload --port 8000 # Windows
 ```
 
 Required environment variables in `.env`:
@@ -86,6 +89,18 @@ Without these, the system runs with an **in-memory demo calendar** pre-seeded wi
 | "Reschedule Bob Williams' appointment to Friday at 10 AM" | reschedule_appointment |
 | "Find patient Alice Johnson" | patient_lookup |
 | "What slots are available with Dr. Smith on Monday?" | check_appointments |
+
+## Troubleshooting
+
+| Issue | Cause | Fix |
+|---|---|---|
+| `audio_too_short` error | Released mic button too quickly | Hold button for the full sentence (2-3 seconds minimum) |
+| `I'm sorry, I encountered an error` | Server started with old/placeholder API key | Restart uvicorn after updating `.env` |
+| `Invalid HTTP header value` | Response text contained newlines/special chars | Fixed in latest version — pull latest code |
+| Text test works but voice doesn't | TTS async issue | Fixed in latest version — pull latest code |
+| Backend offline (red dot in UI) | uvicorn not running | Run `py -3 -m uvicorn main:app --reload --port 8000` in backend folder |
+
+> **Important:** After updating `.env`, always restart uvicorn manually — hot-reload only applies to `.py` file changes, not environment variables.
 
 ## API Endpoints
 
