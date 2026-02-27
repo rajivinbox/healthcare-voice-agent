@@ -12,6 +12,7 @@ import io
 import logging
 import uuid
 from contextlib import asynccontextmanager
+from urllib.parse import quote
 
 from fastapi import FastAPI, File, Form, HTTPException, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
@@ -84,7 +85,7 @@ async def process_audio(
                 media_type="audio/mpeg",
                 headers={
                     "X-User-Text": "",
-                    "X-Response-Text": "I didn't catch that. Could you please repeat?",
+                    "X-Response-Text": quote("I didn't catch that. Could you please repeat?"),
                     "X-Session-Id": session_id,
                     "X-Intent": "unknown",
                     "X-Goal-Achieved": "false",
@@ -101,8 +102,8 @@ async def process_audio(
             io.BytesIO(audio_out),
             media_type="audio/mpeg",
             headers={
-                "X-User-Text": user_text[:500],           # header size limit guard
-                "X-Response-Text": response_text[:500],
+                "X-User-Text": quote(user_text[:500]),
+                "X-Response-Text": quote(response_text[:500]),
                 "X-Session-Id": session_id,
                 "X-Goal-Achieved": "true",
             },

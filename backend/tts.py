@@ -29,7 +29,7 @@ async def synthesize_speech(
     Args:
         text: Text to synthesize
         voice_id: ElevenLabs voice ID (default: Rachel)
-        model_id: Model to use — eleven_turbo_v2_5 (fast) or eleven_multilingual_v2 (quality)
+        model_id: eleven_turbo_v2_5 (fast) or eleven_multilingual_v2 (quality)
 
     Returns:
         MP3 audio bytes
@@ -40,14 +40,15 @@ async def synthesize_speech(
     logger.info("Synthesizing speech for text (%d chars)", len(text))
 
     client = _get_client()
-    audio_generator = await client.text_to_speech.convert(
+    chunks = []
+    async for chunk in client.text_to_speech.convert(
         voice_id=voice_id,
         text=text,
         model_id=model_id,
         output_format="mp3_44100_128",
-    )
+    ):
+        chunks.append(chunk)
 
-    # Collect streamed chunks into a single bytes object
-    audio_bytes = b"".join([chunk async for chunk in audio_generator])
+    audio_bytes = b"".join(chunks)
     logger.info("TTS produced %d bytes of audio", len(audio_bytes))
     return audio_bytes
