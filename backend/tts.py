@@ -21,7 +21,7 @@ def _get_client() -> AsyncElevenLabs:
 async def synthesize_speech(
     text: str,
     voice_id: str = DEFAULT_VOICE_ID,
-    model_id: str = "eleven_turbo_v2_5",
+    model_id: str = "eleven_multilingual_v2",
 ) -> bytes:
     """
     Convert text to speech audio bytes using ElevenLabs.
